@@ -7,6 +7,8 @@ permissions:
 
 jobs:
   pylint:
+    outputs:
+      status: ${{ job.status }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -29,3 +31,12 @@ jobs:
         run: |
           # shellcheck disable=SC2046
           pylint $(git ls-files '*.py')
+
+  slack-notification:
+    needs: [pylint]
+    if: ${{ always() && contains(fromJSON('["failure", "cancelled"]'), needs.pylint.outputs.status ) && github.ref_name == github.event.repository.default_branch }}
+    secrets:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+    uses: senzing-factory/build-resources/.github/workflows/build-failure-slack-notification.yaml@v2
+    with:
+      job-status: ${{ needs.pylint.outputs.status }}
