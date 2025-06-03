@@ -81,9 +81,7 @@ def futures_search(engine, input_file, output_file):
                 }
 
                 while futures:
-                    done, _ = concurrent.futures.wait(
-                        futures, return_when=concurrent.futures.FIRST_COMPLETED
-                    )
+                    done, _ = concurrent.futures.wait(futures, return_when=concurrent.futures.FIRST_COMPLETED)
                     for f in done:
                         try:
                             result = f.result()
@@ -97,29 +95,22 @@ def futures_search(engine, input_file, output_file):
                             mock_logger("CRITICAL", err, futures[f])
                             raise
                         else:
-                            record = in_file.readline()
-                            if record:
-                                futures[
-                                    executor.submit(search_record, engine, record)
-                                ] = record
-
                             success_recs += 1
                             if success_recs % 1000 == 0:
-                                prev_time = record_stats(
-                                    success_recs, error_recs, prev_time
-                                )
+                                prev_time = record_stats(success_recs, error_recs, prev_time)
 
                             if success_recs % 10000 == 0:
                                 engine_stats(engine)
 
                             search_results(result, futures[f], out_file)
                         finally:
+                            record = in_file.readline()
+                            if record:
+                                futures[executor.submit(search_record, engine, record)] = record
+
                             del futures[f]
 
-                print(
-                    f"\nSuccessfully searched {success_recs:,} records, with"
-                    f" {error_recs:,} errors"
-                )
+                print(f"\nSuccessfully searched {success_recs:,} records, with" f" {error_recs:,} errors")
                 print(f"Search results are located in: {output_file}")
 
 

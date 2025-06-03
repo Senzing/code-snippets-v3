@@ -4,6 +4,7 @@ import concurrent.futures
 import os
 import sys
 import time
+
 from senzing import (
     G2BadInputException,
     G2Engine,
@@ -71,10 +72,7 @@ def redo_count(engine):
 
 
 def redo_pause(success):
-    print(
-        "No redo records to process, pausing for 30 seconds. Total processed:"
-        f" {success:,} (CTRL-C to exit)..."
-    )
+    print("No redo records to process, pausing for 30 seconds. Total processed:" f" {success:,} (CTRL-C to exit)...")
     time.sleep(30)
 
 
@@ -94,9 +92,7 @@ def futures_redo(engine):
                 break
 
         while True:
-            done, _ = concurrent.futures.wait(
-                futures, return_when=concurrent.futures.FIRST_COMPLETED
-            )
+            done, _ = concurrent.futures.wait(futures, return_when=concurrent.futures.FIRST_COMPLETED)
             for f in done:
                 try:
                     _ = f.result()
@@ -110,24 +106,19 @@ def futures_redo(engine):
                     mock_logger("CRITICAL", err, futures[f])
                     raise
                 else:
-                    record = get_redo_record(engine)
-                    if record:
-                        futures[
-                            executor.submit(process_redo_record, engine, record)
-                        ] = record
-                    else:
-                        redo_paused = True
-
                     success_recs += 1
                     if success_recs % 100 == 0:
-                        print(
-                            f"Processed {success_recs:,} redo records, with"
-                            f" {error_recs:,} errors"
-                        )
+                        print(f"Processed {success_recs:,} redo records, with" f" {error_recs:,} errors")
 
                     if success_recs % 1000 == 0:
                         engine_stats(engine)
                 finally:
+                    record = get_redo_record(engine)
+                    if record:
+                        futures[executor.submit(process_redo_record, engine, record)] = record
+                    else:
+                        redo_paused = True
+
                     del futures[f]
 
             if redo_paused:
@@ -137,9 +128,7 @@ def futures_redo(engine):
                 while len(futures) < executor._max_workers:
                     record = get_redo_record(engine)
                     if record:
-                        futures[
-                            executor.submit(process_redo_record, engine, record)
-                        ] = record
+                        futures[executor.submit(process_redo_record, engine, record)] = record
 
 
 try:

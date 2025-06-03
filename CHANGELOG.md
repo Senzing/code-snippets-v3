@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], [markdownlint],
 and this project adheres to [Semantic Versioning].
 
+## [1.1.2] - 2025-06-03
+
+### Fixed in 1.1.2
+
+- Fix potential for futures thread pool to drain on non-terminal errors 
+
 ## [1.1.1] - 2024-05-24
 
 ### Changed in 1.1.1
