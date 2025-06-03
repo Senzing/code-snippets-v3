@@ -6,6 +6,7 @@ import json
 import os
 import sys
 import time
+
 from senzing import (
     G2BadInputException,
     G2Engine,
@@ -66,9 +67,7 @@ def futures_replace(engine, input_file, output_file):
                 }
 
                 while futures:
-                    done, _ = concurrent.futures.wait(
-                        futures, return_when=concurrent.futures.FIRST_COMPLETED
-                    )
+                    done, _ = concurrent.futures.wait(futures, return_when=concurrent.futures.FIRST_COMPLETED)
                     for f in done:
                         try:
                             result = f.result()
@@ -82,29 +81,22 @@ def futures_replace(engine, input_file, output_file):
                             mock_logger("CRITICAL", err, futures[f])
                             raise
                         else:
-                            record = in_file.readline()
-                            if record:
-                                futures[
-                                    executor.submit(replace_record, engine, record)
-                                ] = record
-
                             out_file.write(f"{result}\n")
 
                             success_recs += 1
                             if success_recs % 1000 == 0:
-                                prev_time = record_stats(
-                                    success_recs, error_recs, prev_time
-                                )
+                                prev_time = record_stats(success_recs, error_recs, prev_time)
 
                             if success_recs % 5000 == 0:
                                 engine_stats(engine)
                         finally:
+                            record = in_file.readline()
+                            if record:
+                                futures[executor.submit(replace_record, engine, record)] = record
+
                             del futures[f]
 
-                print(
-                    f"Successfully replaced {success_recs:,} records, with"
-                    f" {error_recs:,} errors"
-                )
+                print(f"Successfully replaced {success_recs:,} records, with" f" {error_recs:,} errors")
                 print(f"With info responses written to {output_file}")
 
 
