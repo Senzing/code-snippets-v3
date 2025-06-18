@@ -137,7 +137,7 @@ When used with a container, the JSON configuration is relative to the paths with
 
 ✏️You only need to modify the `CONNECTION` string to point to your Senzing database.
 
-### Usage for Dccker usage
+### Usage for Docker usage
 
 1. Clone this repository
 1. Export the engine configuration environment variable

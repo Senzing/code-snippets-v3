@@ -7,6 +7,6 @@ NOT_OK=1
 
 # Tests.
 
-echo "Doing healthtest."
+echo "Doing health test."
 
 exit ${OK}
