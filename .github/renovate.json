@@ -5,5 +5,7 @@
     "config:recommended",
     ":disableDependencyDashboard",
     "docker:pinDigests"
-  ]
+  ],
+  "schedule": ["on sunday"],
+  "minimumReleaseAge": "21 days"
 }
