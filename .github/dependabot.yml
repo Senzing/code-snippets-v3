@@ -4,12 +4,16 @@
 version: 2
 updates:
   - package-ecosystem: "github-actions"
+    assignees:
+      - kernelsam
     cooldown:
       default-days: 21
     directory: "/"
     schedule:
       interval: "daily"
   - package-ecosystem: "pip"
+    assignees:
+      - antaenc
     cooldown:
       default-days: 21
     directory: "/"
