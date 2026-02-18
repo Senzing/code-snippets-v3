@@ -10,4 +10,5 @@ jobs:
     name: Verify Dockerfiles REFRESHED_AT Updated
     permissions:
       contents: read
+      pull-requests: read
     uses: senzing-factory/build-resources/.github/workflows/verify-dockerfile-refreshed-at-updated.yaml@v4
