@@ -3,3 +3,6 @@ rules:
     config:
       policies:
         "*": ref-pin
+  secrets-outside-env:
+    ignore:
+      - pylint.yaml
